@@ -1,40 +1,44 @@
-function Ray(fromX, fromY, angle) {
-	let length = 0;
-	let x = fromX;
-	let y = fromY;
+const ρ = 100;
+const step = 5;
+const steps = 360 / step;
 
-	while (
-		x < width && x > 0 && y < height && y > 0
-	) {
-		x = ++length * Math.cos(angle) + fromX;
-		y = ++length * Math.sin(angle) + fromY;
+class Sphere {
+	constructor() {
+		this.points = [];
+		for (let θ = 0; θ < 360; θ += step)
+			for (let ϕ = 0; ϕ < 360; ϕ += step) {
+				let x = ρ * Math.sin(ϕ) * Math.cos(θ),
+					y = ρ * Math.sin(ϕ) * Math.sin(θ),
+					z = ρ * Math.cos(ϕ);
+
+				this.points.push([x, y, z])
+			}
 	}
-	line(fromX, fromY, x, y);
-}
 
-class Player {
-	constructor() {}
 	draw() {
-		this.x = mouseX;
-		this.y = mouseY;
-		push()
-		translate(this.x, this.y)
-		fill(255, 0, 0)
-		circle(0, 0, 50)
-		pop()
-		Array(360).fill().forEach((_, i) => Ray(this.x, this.y, i))
+		this.points.forEach((coords, i) => {
+			stroke(i % 360, 360, 360)
+			point(...coords)
+		})
 	}
 }
 
-let player;
+let mySphere;
 
 function setup() {
-	createCanvas(800, 800);
-	player = new Player();
-	stroke(255)
+	createCanvas(800, 800, WEBGL);
+	colorMode(HSB, 360);
+	mySphere = new Sphere();
+	frameRate(20);
+	angleMode(DEGREES);
+	console.log(mySphere.points)
 }
 
 function draw() {
+	if (mouseIsPressed)
+		orbitControl();
+	else
+		camera(400 * Math.sin(frameCount / 50), 0, 400 * Math.cos(frameCount / 50))
 	background(0);
-	player.draw();
+	mySphere.draw();
 }
