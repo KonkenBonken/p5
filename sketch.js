@@ -3,7 +3,6 @@ const
 	playerSpeed = 4,
 	wallSpeed = 2,
 	wanderAngle = 5,
-	canvasSize = 800,
 
 	{ cos, sin, max, abs } = Math,
 
@@ -15,7 +14,7 @@ const
 let player, walls, center, mouseEnabled = false;
 
 function setup() {
-	createCanvas(canvasSize, canvasSize);
+	createCanvas(windowWidth, windowHeight);
 	center = createVector(width / 2, height / 2);
 	angleMode(DEGREES);
 	player = new Player();
@@ -36,4 +35,8 @@ function keyPressed() {
 		if (!mouseEnabled)
 			player.setPos()
 	}
+}
+
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
 }
