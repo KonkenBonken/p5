@@ -1,5 +1,9 @@
 const { cos, sin, max, abs } = Math;
 
+function isOutside({ x, y }, margin = 0) {
+	return x > width - margin || x < margin || y > height - margin || y < margin
+}
+
 function velocity(size) {
 	return p5.Vector.fromAngle(random(365), size);
 }
@@ -26,7 +30,7 @@ function Ray(fromX, fromY, angle) {
 
 
 		if (
-			x > width || x < 0 || y > height || y < 0 ||
+			isOutside({ x, y }) ||
 			walls.some(wall =>
 				intersect(wall, player.pos, rayEnd) &&
 				min(abs(wall.Fx(x) - y), abs(wall.Fy(y) - x)) < 1
@@ -55,9 +59,15 @@ class Wall {
 	get m() { return this.p1.y - (this.k * this.p1.x) }
 
 	draw() {
-		this.vel1.rotate(random(-5, 5));
+		if (isOutside(this.p1, 10))
+			this.vel1.setHeading(-this.p1.angleBetween(center));
+		else
+			this.vel1.rotate(random(-5, 5));
 		this.p1.add(this.vel1);
-		this.vel2.rotate(random(-5, 5));
+		if (isOutside(this.p2, 10))
+			this.vel2.setHeading(-this.p2.angleBetween(center));
+		else
+			this.vel2.rotate(random(-5, 5));
 		this.p2.add(this.vel2);
 
 		line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
@@ -75,7 +85,11 @@ class Player {
 	}
 
 	wander() {
-		this.vel.rotate(random(-5, 5));
+		if (isOutside(this.pos, 10))
+			this.vel.setHeading(center.angleBetween(this.pos));
+		else
+			this.vel.rotate(random(-5, 5));
+
 		this.pos.add(this.vel);
 	}
 
@@ -88,10 +102,11 @@ class Player {
 	}
 }
 
-let player, walls, mouseEnabled = false;
+let player, walls, center, mouseEnabled = false;
 
 function setup() {
 	createCanvas(800, 800);
+	center = createVector(width / 2, height / 2);
 	angleMode(DEGREES);
 	player = new Player();
 	walls = Array(4).fill().map(x => new Wall);
