@@ -30,11 +30,8 @@ function draw() {
 }
 
 function keyPressed() {
-	if (keyCode === 32 /*SPACE*/ ) {
+	if (keyCode === 32 /*SPACE*/ )
 		mouseEnabled = !mouseEnabled
-		if (!mouseEnabled)
-			player.setPos()
-	}
 }
 
 function windowResized() {
