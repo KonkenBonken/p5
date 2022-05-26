@@ -7,28 +7,28 @@ function ccw(a, b, c) {
 // (wall, player.pos, ray.pos)
 function intersect({ p1, p2 }, q1, q2) {
 	return ccw(p1, q1, q2) != ccw(p2, q1, q2) &&
-		ccw(p1, p2, q1) != ccw(p1, p2, q2)
+		ccw(p1, p2, q1) != ccw(p1, p2, q2);
 }
 
 function Ray(fromX, fromY, angle) {
 	let length = 0,
 		x = fromX,
 		y = fromY;
+	const rayEnd = createVector(width * cos(angle) + fromX, height * sin(angle) + fromY);
 
 	while (true) {
 		x = ++length * cos(angle) + fromX;
 		y = length * sin(angle) + fromY;
 
-		let rayEnd = createVector(width * cos(angle) + fromX, height * sin(angle) + fromY);
 
 		if (
 			x > width || x < 0 || y > height || y < 0 ||
 			walls.some(wall =>
 				intersect(wall, player.pos, rayEnd) &&
-				max(abs(wall.Fx(x) - y), abs(wall.Fy(y) - x)) < 3
+				min(abs(wall.Fx(x) - y), abs(wall.Fy(y) - x)) < 1
 			)
 		) {
-			stroke(255 - (length / width * 255))
+			stroke(255 - (length / width * 255));
 			break;
 		}
 	}
@@ -40,12 +40,13 @@ class Wall {
 		this.p1 = createVector(x1, y1);
 		this.p2 = createVector(x2, y2);
 
-		const k = (y1 - y2) / (x1 - x2),
-			m = y1 - (k * x1);
-		this.Fx = x => k * x + m;
-		this.Fy = y => (y - m) / k;
+		this.Fx = x => this.k * x + this.m;
+		this.Fy = y => (y - this.m) / this.k;
 
 	}
+
+	get k() { return (this.p1.y - this.p2.y) / (this.p1.x - this.p2.x) }
+	get m() { return this.p1.y - (this.k * this.p1.x) }
 
 	draw() {
 		line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
@@ -72,8 +73,8 @@ function setup() {
 
 function draw() {
 	background(0);
-	player.draw();
 	stroke(255)
 	for (var wall of walls)
 		wall.draw()
+	player.draw();
 }
