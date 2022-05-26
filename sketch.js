@@ -1,5 +1,9 @@
 const { cos, sin, max, abs } = Math;
 
+function velocity(size) {
+	return p5.Vector.fromAngle(random(365), size);
+}
+
 function ccw(a, b, c) {
 	return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
@@ -43,30 +47,52 @@ class Wall {
 		this.Fx = x => this.k * x + this.m;
 		this.Fy = y => (y - this.m) / this.k;
 
+		this.vel1 = velocity(2);
+		this.vel2 = velocity(2);
 	}
 
 	get k() { return (this.p1.y - this.p2.y) / (this.p1.x - this.p2.x) }
 	get m() { return this.p1.y - (this.k * this.p1.x) }
 
 	draw() {
+		this.vel1.rotate(random(-5, 5));
+		this.p1.add(this.vel1);
+		this.vel2.rotate(random(-5, 5));
+		this.p2.add(this.vel2);
+
 		line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
 	}
 }
 
 class Player {
+	constructor() {
+		this.setPos();
+	}
+
+	setPos() {
+		this.pos = createVector(random(100, 700), random(100, 700));
+		this.vel = velocity(4);
+	}
+
+	wander() {
+		this.vel.rotate(random(-5, 5));
+		this.pos.add(this.vel);
+	}
+
 	draw() {
-		this.pos = createVector(mouseX, mouseY)
-		push()
-		translate(this.pos.x, this.pos.y)
-		pop()
+		if (mouseEnabled)
+			this.pos = createVector(mouseX, mouseY)
+		else
+			this.wander();
 		Array(360).fill().forEach((_, i) => Ray(this.pos.x, this.pos.y, i))
 	}
 }
 
-let player, walls;
+let player, walls, mouseEnabled = false;
 
 function setup() {
 	createCanvas(800, 800);
+	angleMode(DEGREES);
 	player = new Player();
 	walls = Array(4).fill().map(x => new Wall);
 }
@@ -77,4 +103,12 @@ function draw() {
 	for (var wall of walls)
 		wall.draw()
 	player.draw();
+}
+
+function keyPressed() {
+	if (keyCode === 32 /*SPACE*/ ) {
+		mouseEnabled = !mouseEnabled
+		if (!mouseEnabled)
+			player.setPos()
+	}
 }
