@@ -1,22 +1,9 @@
-const { cos, sin, max, abs } = Math;
+const { cos, sin, max, abs } = Math,
 
-function isOutside({ x, y }, margin = 0) {
-	return x > width - margin || x < margin || y > height - margin || y < margin
-}
-
-function velocity(size) {
-	return p5.Vector.fromAngle(random(365), size);
-}
-
-function ccw(a, b, c) {
-	return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
-}
-
-// (wall, player.pos, ray.pos)
-function intersect({ p1, p2 }, q1, q2) {
-	return ccw(p1, q1, q2) != ccw(p2, q1, q2) &&
-		ccw(p1, p2, q1) != ccw(p1, p2, q2);
-}
+isOutside = ({ x, y }, margin = 0) => x > width - margin || x < margin || y > height - margin || y < margin,
+	velocity = (size) => p5.Vector.fromAngle(random(365), size),
+	ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x),
+	intersect = ({ p1, p2 }, q1, q2) /*(wall,player.pos,ray.pos)*/ => ccw(p1, q1, q2) != ccw(p2, q1, q2) && ccw(p1, p2, q1) != ccw(p1, p2, q2);
 
 function Ray(fromX, fromY, angle) {
 	let length = 0,
@@ -27,7 +14,6 @@ function Ray(fromX, fromY, angle) {
 	while (true) {
 		x = ++length * cos(angle) + fromX;
 		y = length * sin(angle) + fromY;
-
 
 		if (
 			isOutside({ x, y }) ||
