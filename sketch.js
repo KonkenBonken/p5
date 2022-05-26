@@ -1,6 +1,13 @@
-const { cos, sin, max, abs } = Math,
+const
+	rayAngle = 1,
+	playerSpeed = 4,
+	wallSpeed = 2,
+	wanderAngle = 5,
+	canvasSize = 800,
 
-isOutside = ({ x, y }, margin = 0) => x > width - margin || x < margin || y > height - margin || y < margin,
+	{ cos, sin, max, abs } = Math,
+
+	isOutside = ({ x, y }, margin = 0) => x > width - margin || x < margin || y > height - margin || y < margin,
 	velocity = (size) => p5.Vector.fromAngle(random(365), size),
 	ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x),
 	intersect = ({ p1, p2 }, q1, q2) /*(wall,player.pos,ray.pos)*/ => ccw(p1, q1, q2) != ccw(p2, q1, q2) && ccw(p1, p2, q1) != ccw(p1, p2, q2);
@@ -8,7 +15,7 @@ isOutside = ({ x, y }, margin = 0) => x > width - margin || x < margin || y > he
 let player, walls, center, mouseEnabled = false;
 
 function setup() {
-	createCanvas(800, 800);
+	createCanvas(canvasSize, canvasSize);
 	center = createVector(width / 2, height / 2);
 	angleMode(DEGREES);
 	player = new Player();
