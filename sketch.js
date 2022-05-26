@@ -6,6 +6,7 @@ const
 
 	{ cos, sin, max, abs } = Math,
 
+	windowMin = () => min(windowWidth, windowHeight),
 	isOutside = ({ x, y }, margin = 0) => x > width - margin || x < margin || y > height - margin || y < margin,
 	velocity = (size) => p5.Vector.fromAngle(random(365), size),
 	ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x),
@@ -18,7 +19,7 @@ function setup() {
 	center = createVector(width / 2, height / 2);
 	angleMode(DEGREES);
 	player = new Player();
-	walls = Array(4).fill().map(x => new Wall);
+	walls = Array(Math.round(windowMin() / 170)).fill().map(x => new Wall);
 }
 
 function draw() {
@@ -36,4 +37,10 @@ function keyPressed() {
 
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
+
+	const wallsAmount = Math.round(windowMin() / 170)
+	if (wallsAmount > walls.length)
+		walls.push(new Wall)
+	else if (wallsAmount < walls.length)
+		walls.pop()
 }
