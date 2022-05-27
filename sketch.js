@@ -1,3 +1,8 @@
+for (const flagName in flags)
+	if (!Array.isArray(flags[flagName][0]))
+		for (const i in flags[flagName])
+			flags[flagName][i] = [flags[flagName][i], 1]
+
 function Color(decimal) {
 	const
 		r = (decimal & 0xff0000) >> 16,
@@ -10,11 +15,15 @@ function Color(decimal) {
 
 function* Frames() {
 	while (true)
-		for (const i in Object.keys(flags)) {
-			const colors = Object.values(flags)[i];
-			for (var j in colors) {
-				Color(colors[j]);
-				rect(0, map(j, 0, colors.length, 0, height), width, map(j + 1, 0, colors.length, 0, height))
+		for (const flagIndex in Object.keys(flags)) {
+			const colors = Object.values(flags)[flagIndex];
+			const totalHeight = colors.reduce((a, b) => a + b[1], 0);
+			let usedHeight = 0;
+			for (const color of colors) {
+				Color(color[0]);
+				const colorHeight = color[1] / totalHeight * height;
+				rect(0, usedHeight, width, colorHeight)
+				usedHeight += colorHeight;
 			}
 			yield;
 		}
