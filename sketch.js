@@ -68,16 +68,16 @@ function setup() {
 
 	for (var masterX of masters.x)
 		for (var masterY of masters.y)
-			slaves.push(new Slave(masterX, masterY, map(max(masterX.speed, masterY.speed), 1, 9, 0, 192)));
+			slaves.push(new Slave(masterX, masterY, map((masterX.speed + masterY.speed) / 2, 1, 9, 0, 192)));
 }
 
-var hueShift = 0;
+var hueShift = 120;
 
 function draw() {
 	hueShift += .02;
 	if (frameCount % (300 * PI) < 1) {
 		background(0);
-		hueShift = 0;
+		hueShift = 120;
 	}
 
 
