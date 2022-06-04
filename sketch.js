@@ -15,14 +15,12 @@ class Slave {
 
 		stroke(this.hue, 30, 30);
 		strokeWeight(2);
-		for (var i = 1; i < this.path.length; i++)
-			line(...this.path[i], ...this.path[i - 1]);
+		for (var i = pathGap; i < this.path.length; i += pathGap)
+			line(...this.path[i], ...this.path[i - pathGap]);
 
-		if (doPath) {
-			this.path.push([x, y]);
-			if (this.path.length >= 30)
-				this.path.shift();
-		}
+		this.path.push([x, y]);
+		this.path = this.path.slice(-pathLength);
+
 		stroke(this.hue, 100, 50);
 		strokeWeight(5);
 		point(x, y);
@@ -57,15 +55,17 @@ const
 	d = size * .08,
 	gap = size * .02,
 	r = d / 2,
-	tot = d + gap;
+	tot = d + gap,
+	pathGap = 5;
 
 const masters = { x: [], y: [] },
 	slaves = [];
 
+let pathLength = 55;
 
 function setup() {
 	createCanvas(size, size);
-	frameRate(100);
+	frameRate(60);
 	fill(0);
 	colorMode(HSL);
 
@@ -83,11 +83,11 @@ function setup() {
 			slaves.push(new Slave(masterX, masterY, map(max(masterX.speed, masterY.speed), 1, 9, 0, 192)));
 }
 
-let doPath = true;
-
 function draw() {
 	background(0);
-	doPath = !(frameCount % 5);
+
+	if (frameRate() < 60 && pathLength > 10) pathLength--
+	else pathLength++;
 
 	for (var line in masters)
 		for (var master of masters[line])
