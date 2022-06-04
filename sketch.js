@@ -4,7 +4,6 @@ class Slave {
 	constructor(masterX, masterY, hue) {
 		this.masterX = masterX;
 		this.masterY = masterY;
-		this.path = [];
 		this.hue = hue;
 	}
 
@@ -13,17 +12,9 @@ class Slave {
 			x = this.masterX.d.x,
 			y = this.masterY.d.y;
 
-		stroke(this.hue, 30, 30);
-		strokeWeight(2);
-		for (var i = pathGap; i < this.path.length; i += pathGap)
-			line(...this.path[i], ...this.path[i - pathGap]);
-
-		this.path.push([x, y]);
-		this.path = this.path.slice(-pathLength);
-
 		stroke(this.hue, 100, 50);
-		strokeWeight(5);
-		point(x, y);
+		fill(0);
+		circle(x, y, 5);
 	}
 }
 
@@ -36,16 +27,12 @@ class Master {
 	}
 
 	draw() {
-		stroke(this.hue, 30, 30);
-		strokeWeight(2);
-		circle(this.p.x, this.p.y, d);
-
 		stroke(this.hue, 100, 50);
-		strokeWeight(5);
-		var a = (frameCount / 150 * this.speed) % 360;
+		fill(0);
+		var a = (frameCount / 150 * this.speed) % TWO_PI;
 		this.d.x = r * cos(a) + this.p.x;
 		this.d.y = r * sin(a) + this.p.y;
-		point(this.d.x, this.d.y);
+		circle(this.d.x, this.d.y, 5);
 	}
 }
 
@@ -67,6 +54,7 @@ function setup() {
 	createCanvas(size, size);
 	frameRate(60);
 	fill(0);
+	background(0);
 	colorMode(HSL);
 
 	for (var i = 1; i < 10; i++) {
@@ -84,7 +72,6 @@ function setup() {
 }
 
 function draw() {
-	background(0);
 
 	if (frameRate() < 60 && pathLength > 10) pathLength--
 	else pathLength++;
