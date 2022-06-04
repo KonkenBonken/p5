@@ -4,15 +4,14 @@ class Slave {
 	constructor(masterX, masterY, hue) {
 		this.masterX = masterX;
 		this.masterY = masterY;
-		this.p = createVector(masterX.x, masterY.y);
 		this.path = [];
 		this.hue = hue;
 	}
 
 	draw() {
 		var
-			x = this.masterX.d.x + this.p.x,
-			y = this.masterY.d.y + this.p.y;
+			x = this.masterX.d.x,
+			y = this.masterY.d.y;
 
 		stroke(this.hue, 30, 30);
 		strokeWeight(2);
