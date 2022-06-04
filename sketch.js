@@ -12,8 +12,7 @@ class Slave {
 			x = this.masterX.d.x,
 			y = this.masterY.d.y;
 
-		stroke(this.hue, 100, 50);
-		this.hue = (this.hue + .02) % 360;
+		stroke((this.hue + hueShift) % 360, 100, 50);
 		fill(0);
 		circle(x, y, 5);
 	}
@@ -28,8 +27,7 @@ class Master {
 	}
 
 	draw() {
-		stroke(this.hue, 100, 50);
-		this.hue = (this.hue + .02) % 360;
+		stroke((this.hue + hueShift) % 360, 100, 50);
 		fill(0);
 		var a = (frameCount / 150 * this.speed) % TWO_PI;
 		this.d.x = r * cos(a) + this.p.x;
@@ -73,7 +71,15 @@ function setup() {
 			slaves.push(new Slave(masterX, masterY, map(max(masterX.speed, masterY.speed), 1, 9, 0, 192)));
 }
 
+var hueShift = 0;
+
 function draw() {
+	hueShift += .02;
+	if (frameCount % (300 * PI) < 1) {
+		background(0);
+		hueShift = 0;
+	}
+
 
 	if (frameRate() < 60 && pathLength > 10) pathLength--
 	else pathLength++;
