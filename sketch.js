@@ -13,6 +13,7 @@ class Slave {
 			y = this.masterY.d.y;
 
 		stroke(this.hue, 100, 50);
+		this.hue = (this.hue + .02) % 360;
 		fill(0);
 		circle(x, y, 5);
 	}
@@ -28,6 +29,7 @@ class Master {
 
 	draw() {
 		stroke(this.hue, 100, 50);
+		this.hue = (this.hue + .02) % 360;
 		fill(0);
 		var a = (frameCount / 150 * this.speed) % TWO_PI;
 		this.d.x = r * cos(a) + this.p.x;
