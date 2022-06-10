@@ -1,5 +1,8 @@
+const
+	size = window.innerHeight;
+
 function setup() {
-	createCanvas(800, 800);
+	createCanvas(size, size);
 }
 
 function draw() {
