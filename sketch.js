@@ -5,6 +5,8 @@ function setup() {
 	createCanvas(size, size);
 }
 
-function draw() {
-	background(0);
-}
+const frames = (function* _frames() {
+})();
+
+
+var draw = () => frames.next();
