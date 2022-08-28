@@ -28,7 +28,7 @@ const
 		(r, v) => sin(2 * v * r),
 		(r, v) => abs(tan(v * r)),
 		(r, v) => (10 * v) / r,
-		(r, v) => asin(r % (1 / v)),
+		(r, v) => (r % (1 / v)),
 	];
 
 let speedSlider, varSlider, points;
