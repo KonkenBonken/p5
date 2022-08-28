@@ -1,5 +1,3 @@
-const { sin, tan } = Math;
-
 class Point {
 	constructor(speed, distance) {
 		this.pos = createVector(width / 2, height / 2 - distance);
@@ -21,10 +19,12 @@ const
 	resolution = 5,
 	mapper = x => x / 40 / resolution,
 
+	{ sin, tan, abs, asin } = Math,
 	settings = [
 		x => sin(2 * x),
-		x => tan(x),
+		x => abs(tan(x)),
 		x => 10 / x,
+		x => asin(x % 1),
 	];
 
 let slider, points;
@@ -51,6 +51,7 @@ function setup() {
 			fn.toString()
 			.replace(/[)(]/g, ' ')
 			.replace(/\s\*\s/g, '')
+			.replace(/%/g, 'mod')
 			.replace('x =>', 'θ =')
 		)
 		.mouseClicked(() =>
