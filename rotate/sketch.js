@@ -9,8 +9,8 @@ class Point {
 
 	draw() {
 		var a = (frameCount * slider.value() / 150 * this.speed) % TWO_PI;
-		this.pos.x = this.distance * cos(a);
-		this.pos.y = this.distance * sin(a);
+		this.pos.y = -this.distance * cos(a);
+		this.pos.x = this.distance * sin(a);
 		circle(this.pos.x, this.pos.y, 5);
 	}
 }
