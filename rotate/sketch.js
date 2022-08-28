@@ -18,7 +18,7 @@ class Point {
 const
 	size = window.innerHeight,
 	pointCount = size - 500,
-	resolution = 2,
+	resolution = 5,
 	mapper = x => x / 40 / resolution,
 
 	settings = [
