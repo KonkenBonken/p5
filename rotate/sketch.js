@@ -17,7 +17,10 @@ class Point {
 
 const
 	size = window.innerHeight,
-	pointCount = size,
+	pointCount = size - 500,
+	resolution = 2,
+	mapper = x => x / 40 / resolution,
+
 	settings = [
 		x => sin(2 * x),
 		x => tan(x),
@@ -34,10 +37,10 @@ function setup() {
 	background(0);
 	translate(width / 2, height / 2);
 
-	points = [...Array((pointCount - 500) * 2).keys()].map(i =>
+	points = [...Array(pointCount * resolution).keys()].map(i =>
 		new Point(
-			settings[0](i / 80),
-			i / 2
+			settings[0](mapper(i)),
+			i / resolution
 		)
 	);
 
@@ -51,7 +54,7 @@ function setup() {
 			.replace('x =>', 'θ =')
 		)
 		.mouseClicked(() =>
-			points.forEach((point, i) => point.speed = fn(i / 80))
+			points.forEach((point, i) => point.speed = fn(mapper(i)))
 		).parent(div)
 
 	createButton('Restart')
