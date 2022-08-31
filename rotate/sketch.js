@@ -23,12 +23,14 @@ const
 	resolution = 5,
 	wrapper = f => (x, v) => f(x / 40, varSlider.value()),
 
-	{ sin, tan, abs, asin } = Math,
+	{ sin, cos, tan, abs, log } = Math,
 	settings = [
 		(r, v) => sin(2 * v * r),
 		(r, v) => abs(tan(v * r)),
 		(r, v) => (10 * v) / r,
-		(r, v) => (r % (1 / v)),
+		(r, v) => r % (1 / v),
+		(r, v) => cos(v * r) + 1.1,
+		(r, v) => r ** r / (v * 1e11),
 	];
 
 let speedSlider, varSlider, points;
@@ -51,9 +53,9 @@ function setup() {
 	const div = createElement('div');
 	[
 		createSpan('Speed ='),
-		speedSlider = createSlider(.01, 4, 1, 0),
+		speedSlider = createSlider(.01, 4, 1, 1e-6),
 		createSpan('v ='),
-		varSlider = createSlider(.01, 10, 1, 0),
+		varSlider = createSlider(.01, 10, 1, 1e-6),
 		createSpan('Function ='),
 
 		...settings.map(fn =>
@@ -61,6 +63,7 @@ function setup() {
 				fn.toString()
 				.replace('(r, v) =>', 'θ =')
 				.replace(/[)(]/g, ' ')
+				.replace(/\s\*\s1e/g, 'E')
 				.replace(/\s\*\s/g, '')
 				.replace(/%/g, 'mod')
 			)
