@@ -1,19 +1,23 @@
-const { abs } = Math;
+// @ts-nocheck
+
+const { abs, round } = Math;
 
 const
 	size = window.innerHeight,
-	pixelSize = 20,
 	noiseReducer = 100,
 	stepSize = 5,
-	camSize = size / 6
+	camSize = size / 6;
 
-let pPos, wPos;
+let pixelShare = 100,
+	pixelSize = round(size / pixelShare),
+	pPos, wPos;
 
 function setup() {
 	createCanvas(size, size);
 	noStroke();
 	noiseDetail(1);
 	colorMode(HSL, 360);
+	frameRate(30);
 
 	pPos = createVector(0, 0);
 	wPos = createVector(0, 0);
@@ -30,10 +34,15 @@ function draw() {
 	for (let x = -width / 2; x < width / 2; x += pixelSize)
 		for (let y = -height / 2; y < height / 2; y += pixelSize) {
 			fill(...ColorAt(x, y))
+			square(x, y, pixelSize);
 		}
 
-	fill(255, 200, 220);
+	fill(0, 360, 220);
 	circle(pPos.x, pPos.y, pixelSize);
+
+	if (frameRate() < 15) pixelShare--;
+	if (frameRate() > 33) pixelShare++;
+	pixelSize = round(size / pixelShare);
 }
 
 function Move() {
