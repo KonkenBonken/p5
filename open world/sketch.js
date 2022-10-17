@@ -1,7 +1,7 @@
 const { abs } = Math;
 
 const
-	size = window.innerHeight - 40,
+	size = window.innerHeight,
 	pixelSize = 20,
 	noiseReducer = 100,
 	stepSize = 5,
