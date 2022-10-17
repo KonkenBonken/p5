@@ -6,11 +6,14 @@ const
 	size = window.innerHeight,
 	noiseReducer = 100,
 	stepSize = 5,
-	camSize = size / 6;
+	camSize = size / 6,
 
-let pixelShare = 100,
-	pixelSize = round(size / pixelShare),
-	pPos, wPos;
+	pixel = {
+		share: 100,
+		get size() { return round(size / this.share) }
+	};
+
+let pPos, wPos;
 
 function setup() {
 	createCanvas(size, size);
@@ -31,18 +34,17 @@ function draw() {
 	while (!isSafe())
 		noiseSeed();
 
-	for (let x = -width / 2; x < width / 2; x += pixelSize)
-		for (let y = -height / 2; y < height / 2; y += pixelSize) {
+	for (let x = -width / 2; x < width / 2; x += pixel.size)
+		for (let y = -height / 2; y < height / 2; y += pixel.size) {
 			fill(...ColorAt(x, y))
-			square(x, y, pixelSize);
+			square(x, y, pixel.size);
 		}
 
 	fill(0, 360, 220);
-	circle(pPos.x, pPos.y, pixelSize);
+	circle(pPos.x, pPos.y, pixel.size);
 
-	if (frameRate() < 15) pixelShare--;
-	if (frameRate() > 33) pixelShare++;
-	pixelSize = round(size / pixelShare);
+	if (frameRate() < 20) pixel.share--;
+	if (frameRate() > 30) pixel.share++;
 }
 
 function Move() {
