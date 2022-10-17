@@ -7,15 +7,13 @@ const
 	stepSize = 5,
 	camSize = size / 6
 
-let pPos, wPos, grassSlider;
+let pPos, wPos;
 
 function setup() {
 	createCanvas(size, size);
 	noStroke();
 	noiseDetail(1);
 	colorMode(HSL, 360);
-
-	grassSlider = createSlider(0, 60, 30);
 
 	pPos = createVector(0, 0);
 	wPos = createVector(0, 0);
