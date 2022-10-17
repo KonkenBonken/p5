@@ -24,6 +24,9 @@ function draw() {
 	background(0);
 	Move();
 
+	while (!isSafe())
+		noiseSeed();
+
 	for (let x = -width / 2; x < width / 2; x += pixelSize)
 		for (let y = -height / 2; y < height / 2; y += pixelSize) {
 			fill(...ColorAt(x, y))
