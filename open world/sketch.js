@@ -26,14 +26,7 @@ function draw() {
 
 	for (let x = -width / 2; x < width / 2; x += pixelSize)
 		for (let y = -height / 2; y < height / 2; y += pixelSize) {
-			fill(...Color(map(
-				noise(
-					(x + wPos.x) / noiseReducer + 1e6,
-					(y + wPos.y) / noiseReducer + 1e6
-				),
-				0, .5, 0, 100
-			), x, y))
-			square(x - 5, y - 5, pixelSize + 5, 5);
+			fill(...ColorAt(x, y))
 		}
 
 	fill(255, 200, 220);
@@ -42,13 +35,13 @@ function draw() {
 
 function Move() {
 	if (keyIsDown(87))       // w
-		yPos(-1).add(0, -stepSize);
+		isSafe(0, -1) && yPos(-1).add(0, -stepSize);
 	else if (keyIsDown(83))  // s
-		yPos().add(0, stepSize);
+		isSafe(0, 1) && yPos().add(0, stepSize);
 	if (keyIsDown(65))       // a
-		xPos(-1).add(-stepSize);
-	else if (keyIsDown(68))  // d
-		xPos().add(stepSize);
+		isSafe(-1) && xPos(-1).add(-stepSize);
+	else if (keyIsDown(68))   // d
+		isSafe(1) && xPos().add(stepSize);
 }
 
 const
@@ -58,13 +51,41 @@ const
 	yPos = (m = 1) => yInCam(m) ? pPos : wPos,
 	xPos = (m = 1) => xInCam(m) ? pPos : wPos;
 
-function Color(val, x, y) { // 0 < val < 100
+const C = {
+	water: 230,
+	dirt: 20,
+	grass: 120,
+}
+
+function Color(val) { // 0 < val < 100
 	const [hue, bp] = [
-		[230, 35],
-		[20, 60],
-		[120, 100]
+		[C.water, 35],
+		[C.dirt, 60],
+		[C.grass, 100]
 	]
 		.find(([, max]) => val < max);
 
 	return [hue, 360, map(val, bp - 20, bp + 20, 60, 100)];
+}
+
+function HeightAt(x = pPos.x, y = pPos.y) {
+	return map(
+		noise(
+			(x + wPos.x) / noiseReducer + 1e6,
+			(y + wPos.y) / noiseReducer + 1e6
+		),
+		0, .5, 0, 100
+	)
+}
+
+function ColorAt(x, y) {
+	return Color(HeightAt(x, y))
+}
+
+function HueAt(x, y) {
+	return ColorAt(x, y)[0];
+}
+
+function isSafe(dx = 0, dy = 0) {
+	return HueAt(pPos.x + stepSize * dx, pPos.y + stepSize * dy) !== C.water;
 }
