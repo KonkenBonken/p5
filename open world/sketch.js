@@ -3,20 +3,22 @@
 const { abs, round } = Math;
 
 const
-	size = window.innerHeight,
-	noiseReducer = 100,
-	stepSize = 5,
-	camSize = size / 6,
+	size = {
+		height: window.innerHeight,
+		width: window.innerWidth
+	},
+	camShare = 6,
 
 	pixel = {
-		share: 100,
-		get size() { return round(size / this.share) }
+		share: 50, // initial number of horizontal pixels
+		get size() { return round(size.width / this.share / 2) },
+		get step() { return this.size / 2 },
 	};
 
 let pPos, wPos;
 
 function setup() {
-	createCanvas(size, size);
+	createCanvas(size.width, size.height);
 	noStroke();
 	noiseDetail(1);
 	colorMode(HSL, 360);
@@ -49,18 +51,18 @@ function draw() {
 
 function Move() {
 	if (keyIsDown(87))       // w
-		isSafe(0, -1) && yPos(-1).add(0, -stepSize);
+		isSafe(0, -1) && yPos(-1).add(0, -pixel.step);
 	else if (keyIsDown(83))  // s
-		isSafe(0, 1) && yPos().add(0, stepSize);
+		isSafe(0, 1) && yPos().add(0, pixel.step);
 	if (keyIsDown(65))       // a
-		isSafe(-1) && xPos(-1).add(-stepSize);
+		isSafe(-1) && xPos(-1).add(-pixel.step);
 	else if (keyIsDown(68))   // d
-		isSafe(1) && xPos().add(stepSize);
+		isSafe(1) && xPos().add(pixel.step);
 }
 
 const
-	yInCam = m => pPos.y * m < camSize,
-	xInCam = m => pPos.x * m < camSize,
+	yInCam = m => pPos.y * m < height / camShare,
+	xInCam = m => pPos.x * m < width / camShare,
 
 	yPos = (m = 1) => yInCam(m) ? pPos : wPos,
 	xPos = (m = 1) => xInCam(m) ? pPos : wPos;
@@ -101,5 +103,5 @@ function HueAt(x, y) {
 }
 
 function isSafe(dx = 0, dy = 0) {
-	return HueAt(pPos.x + stepSize * dx, pPos.y + stepSize * dy) !== C.water;
+	return HueAt(pPos.x + pixel.step * dx, pPos.y + pixel.step * dy) !== C.water;
 }
