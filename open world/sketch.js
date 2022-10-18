@@ -79,12 +79,12 @@ const C = {
 function Color(val) { // 0 < val < 100
 	const [hue, bp] = [
 		[C.water, 35],
-		[C.dirt, 60],
+		[C.dirt, 50],
 		[C.grass, 100]
 	]
 		.find(([, max]) => val < max);
 
-	return [hue, 360, map(val, bp - 20, bp + 20, 60, 100)];
+	return [hue, 360, map(val, bp - 20, bp + 25, 60, 100)];
 }
 
 function HeightAt(x = pPos.x, y = pPos.y) {
