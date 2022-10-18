@@ -16,8 +16,8 @@ const
 	};
 
 let pPos, wPos,
-	prevZoom = 100,
-	zoomLevel = 100;
+	zoomLevel = 170,
+	prevZoom = zoomLevel;
 
 function setup() {
 	createCanvas(size.width, size.height);
@@ -35,7 +35,7 @@ function draw() {
 	background(0);
 	Move();
 
-	if (frameCount < 100)
+	if (frameCount < 30)
 		while (!isSafe())
 			noiseSeed();
 
@@ -110,7 +110,7 @@ function isSafe(dx = 0, dy = 0) {
 }
 
 function mouseWheel({ delta }) {
-	zoomLevel = min(max(zoomLevel - (delta * zoomLevel / 2500), 65), 400);
+	zoomLevel = min(max(zoomLevel - (delta * zoomLevel / 2500), 65), 500);
 	if (!isSafe()) zoomLevel = prevZoom;
 
 	pPos.mult(zoomLevel / prevZoom);
