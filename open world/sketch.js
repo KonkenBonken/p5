@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { abs, round } = Math;
+const { abs, round, min, max } = Math;
 
 const
 	size = {
@@ -12,10 +12,12 @@ const
 	pixel = {
 		share: 50, // initial number of horizontal pixels
 		get size() { return round(size.width / this.share / 2) },
-		get step() { return this.size / 2 },
+		get step() { return this.size / 200 * zoomLevel },
 	};
 
-let pPos, wPos;
+let pPos, wPos,
+	prevZoom = 100,
+	zoomLevel = 100;
 
 function setup() {
 	createCanvas(size.width, size.height);
@@ -33,8 +35,9 @@ function draw() {
 	background(0);
 	Move();
 
-	while (!isSafe())
-		noiseSeed();
+	if (frameCount < 100)
+		while (!isSafe())
+			noiseSeed();
 
 	for (let x = -width / 2; x < width / 2; x += pixel.size)
 		for (let y = -height / 2; y < height / 2; y += pixel.size) {
@@ -43,10 +46,10 @@ function draw() {
 		}
 
 	fill(0, 360, 220);
-	circle(pPos.x, pPos.y, pixel.size);
+	circle(pPos.x, pPos.y, pixel.size * zoomLevel / 100);
 
-	if (frameRate() < 20) pixel.share--;
-	if (frameRate() > 30) pixel.share++;
+	if (frameRate() < 15) pixel.share--;
+	if (frameRate() > 31) pixel.share++;
 }
 
 function Move() {
@@ -87,8 +90,8 @@ function Color(val) { // 0 < val < 100
 function HeightAt(x = pPos.x, y = pPos.y) {
 	return map(
 		noise(
-			(x + wPos.x) / noiseReducer + 1e6,
-			(y + wPos.y) / noiseReducer + 1e6
+			x / zoomLevel + wPos.x / 100 + 1024,
+			y / zoomLevel + wPos.y / 100 + 1024
 		),
 		0, .5, 0, 100
 	)
@@ -104,4 +107,12 @@ function HueAt(x, y) {
 
 function isSafe(dx = 0, dy = 0) {
 	return HueAt(pPos.x + pixel.step * dx, pPos.y + pixel.step * dy) !== C.water;
+}
+
+function mouseWheel({ delta }) {
+	zoomLevel = min(max(zoomLevel - (delta * zoomLevel / 2500), 65), 400);
+	if (!isSafe()) zoomLevel = prevZoom;
+
+	pPos.mult(zoomLevel / prevZoom);
+	prevZoom = zoomLevel;
 }
